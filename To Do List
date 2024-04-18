@@ -1,0 +1,71 @@
+import json
+
+# Function to load tasks from tasks.json file
+def load_tasks():
+    try:
+        with open('tasks.json', 'r') as file:
+            tasks = json.load(file)  # Load tasks from JSON file
+    except FileNotFoundError:
+        tasks = []  # If file not found, return an empty list
+    return tasks
+
+# Function to save tasks to tasks.json file
+def save_tasks(tasks):
+    with open('tasks.json', 'w') as file:
+        json.dump(tasks, file)  # Write tasks to JSON file
+
+# Function to add a new task
+def add_task(task):
+    tasks = load_tasks()  # Load existing tasks
+    tasks.append({'task': task, 'completed': False})  # Append new task with completion status
+    save_tasks(tasks)  # Save updated tasks to file
+    print(f'Task "{task}" added successfully.')
+
+# Function to list all tasks
+def list_tasks():
+    tasks = load_tasks()  # Load existing tasks
+    if not tasks:
+        print('No tasks found.')  # If no tasks found, print message
+    else:
+        for idx, task in enumerate(tasks, start=1):
+            status = 'Done' if task['completed'] else 'Not Done'  # Determine task completion status
+            print(f'{idx}. [{status}] {task["task"]}')  # Print task number, status, and task description
+
+# Function to mark a task as done
+def mark_task_done(task_num):
+    tasks = load_tasks()  # Load existing tasks
+    if task_num <= len(tasks):
+        tasks[task_num - 1]['completed'] = True  # Mark task as done
+        save_tasks(tasks)  # Save updated tasks to file
+        print(f'Task {task_num} marked as done.')
+    else:
+        print('Invalid task number.')  # If task number is invalid, print message
+
+# Main function to run the application
+def main():
+    print('Welcome to the To-Do List App!')
+    while True:
+        print('\nMenu:')
+        print('1. Add Task')
+        print('2. List Tasks')
+        print('3. Mark Task as Done')
+        print('4. Exit')
+
+        choice = input('Enter your choice: ')
+
+        if choice == '1':
+            task = input('Enter the task: ')
+            add_task(task)  # Call add_task function
+        elif choice == '2':
+            list_tasks()  # Call list_tasks function
+        elif choice == '3':
+            task_num = int(input('Enter the task number to mark as done: '))
+            mark_task_done(task_num)  # Call mark_task_done function
+        elif choice == '4':
+            print('Exiting the application.')
+            break  # Exit the loop and end the program
+        else:
+            print('Invalid choice. Please try again.')  # If choice is invalid, print message
+
+if __name__ == '__main__':
+    main()  # Call main function if script is executed directly
